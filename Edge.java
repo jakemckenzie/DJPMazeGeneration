@@ -18,6 +18,6 @@ public class Edge {
 
     @Override
     public toString() {
-        return "{" + this.origin + ", " + this.destination + "}";
+        return "{" + this.origin + "=>" + this.destination + "}";
     }
 }
