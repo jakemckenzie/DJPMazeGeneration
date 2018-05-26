@@ -82,9 +82,10 @@ public class Graph {
     }
     public void print() {
         String s = "";
+        s+="X S ";
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                s += flatWall[y][x] ? "X   " : "X X ";    
+                 s += (x == 0 && y == 0) ? "" : flatWall[y][x] ? "X   " : "X X ";    
             }
             s += "X" + "\n";
             for (int x = 0; x < WIDTH; x++) {
@@ -92,10 +93,11 @@ public class Graph {
             }
             s += "X" + "\n";            
         }
-        for (int x = 0; x < WIDTH; x++) {
+        for (int x = 0; x < WIDTH-1; x++) {
             s += flatWall[HEIGHT][x] ? "X   " : "X X ";
         }
-        s += "X" + "\n";
+        s += "X F X" + "\n";
+        //s = s.substring(0,1) + ' ' + 'S' + s.substring(3);
         System.out.println(s);
     }
     /**
