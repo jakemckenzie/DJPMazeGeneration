@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Arrays;
 // cd C:\Users\Epimetheus\Documents\GitHub\DJPMazeGeneration
 // javac *.java -Xlint:unchecked
 // http://interactivepython.org/runestone/static/Java/Graphs/PrimsSpanningTreeAlgorithm.html
@@ -67,38 +68,38 @@ public class Graph {
                 flatWall[w.y + 1][w.x]          = true;
                 n                               = lattice[w.y + 1][w.x];
             } 
-
+            
             int Y = n.y;
             int X = n.x;
 
             if (Y > 0 && !lattice[Y - 1][X].added)                  borders.add(new Wall(Y, X, Up));
             if (Y < (HEIGHT - 1) && !lattice[Y + 1][X].added)       borders.add(new Wall(Y, X, Down));
             if (X > 0 && !lattice[Y][X - 1].added)                  borders.add(new Wall(Y, X, Left));
-            if (X < (WIDTH - 1) && !lattice[Y][X + 1].added)        borders.add(new Wall(Y, X, Right));   
-
+            if (X < (WIDTH - 1) && !lattice[Y][X + 1].added)        borders.add(new Wall(Y, X, Right));
         }
+        
 
         
     }
     public void print() {
-        String s = "";
-        s+="X S ";
+        String maze = "";
+        maze += "XSSX";
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                 s += (x == 0 && y == 0) ? "" : flatWall[y][x] ? "X   " : "X X ";    
+                maze += (x == 0 && y == 0) ? "": flatWall[y][x] ? "X   " : "XXXX";    
             }
-            s += "X" + "\n";
+            maze += "X" + "\n";
             for (int x = 0; x < WIDTH; x++) {
-                s += tallWall[y][x] ? (lattice[y][x].added && debugger) ? "  V ": "    " : lattice[y][x].added && debugger ? "X V " : "X   ";
+                maze += tallWall[y][x] ? (lattice[y][x].added && debugger) ? "  V ": "    " : lattice[y][x].added && debugger ? "X V " : "X   ";
             }
-            s += "X" + "\n";            
+            maze += "X" + "\n";            
         }
         for (int x = 0; x < WIDTH-1; x++) {
-            s += flatWall[HEIGHT][x] ? "X   " : "X X ";
+            maze += flatWall[HEIGHT][x] ? "X   " : "XXXX";
         }
-        s += "X F X" + "\n";
+        maze += "XXFFX" + "\n";
         //s = s.substring(0,1) + ' ' + 'S' + s.substring(3);
-        System.out.println(s);
+        System.out.println(maze);
     }
     /**
      * I implemented these after reading about how Java random works. Essentially they exist to make
