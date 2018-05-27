@@ -105,13 +105,35 @@ public class Graph {
             char[] c = temp[y].toCharArray();
             for (int x = 0; x < c.length; x++) {
                 //System.out.print(" " + y + " " + x + " ");
-                rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF: c[x] != 'S' ? 0x8000 : 0xFFFFFF; 
+                rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF: c[x] != 'S' ? 0xFFFFFF : 0xFFFFFF; 
             }
         }
         System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
 
         System.out.println(maze);
+
+        int[][] solution                = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
+        solver(rgbMaze,0,1,0xFF,solution);
+        System.out.println(Arrays.deepToString(solution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
     }
+    public boolean solver(int[][] rgbMaze,int y, int x, int path,  int[][] solution){
+        if (y == (HEIGHT * 2 + 1) - 1 && x == (WIDTH * 4 + 1) - 1) {
+            solution[y][x] = path++;
+            return true;
+        }
+        if (isSafe(rgbMaze, x, y) == true) {
+            solution[y][x] = path++;
+            if (solver(rgbMaze, y + 1, x, path , solution)) return true;
+            if (solver(rgbMaze, y, x + 1, path, solution)) return true;
+            solution[y][x] = path++;
+            return false;
+        }
+        return false;
+    }
+    public boolean isSafe(int rgbMaze[][], int y, int x) {
+        return (y >= 1 && y < HEIGHT * 2 + 1 && x >= 0 && x < WIDTH * 4 + 1 && rgbMaze[y][x] == 0xFFFFFF);
+    }
+ 
     /**
      * I implemented these after reading about how Java random works. Essentially they exist to make
      * better psuedo-random seeds. My average day count and standard deviation decreased after I 
