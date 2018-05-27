@@ -14,6 +14,7 @@ public class Graph {
     public Node[][] lattice;
     public boolean[][] flatWall;
     public boolean[][] tallWall;
+    public int[][] rgbMaze;
 
     public Graph(int HEIGHT, int WIDTH, boolean debugger) {
         this.HEIGHT                     = HEIGHT;
@@ -83,7 +84,8 @@ public class Graph {
     }
     public void print() {
         String maze = "";
-        maze += "XSSX";
+        rgbMaze = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
+        maze += "XSXX";
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
                 maze += (x == 0 && y == 0) ? "": flatWall[y][x] ? "X   " : "XXXX";    
@@ -97,8 +99,17 @@ public class Graph {
         for (int x = 0; x < WIDTH-1; x++) {
             maze += flatWall[HEIGHT][x] ? "X   " : "XXXX";
         }
-        maze += "XXFFX" + "\n";
-        //s = s.substring(0,1) + ' ' + 'S' + s.substring(3);
+        maze += "XXXFX" + "\n";
+        String temp[] = maze.split("\\\n");
+        for (int y = 0; y < temp.length; y++) {
+            char[] c = temp[y].toCharArray();
+            for (int x = 0; x < c.length; x++) {
+                //System.out.print(" " + y + " " + x + " ");
+                rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF: c[x] != 'S' ? 0x8000 : 0xFFFFFF; 
+            }
+        }
+        System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+
         System.out.println(maze);
     }
     /**
