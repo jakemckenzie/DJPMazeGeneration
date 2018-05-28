@@ -107,40 +107,39 @@ public class Graph {
             char[] c = temp[y].toCharArray();
             for (int x = 0; x < c.length; x++) {
                 //System.out.print(" " + y + " " + x + " ");
-                rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF: c[x] != 'S' ? 0xFFFFFF : 0xFFFFFF; 
+                rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF : 0xFFFFFF; 
             }
         }
-        System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+        //System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
 
         System.out.println(maze);
 
         solution = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
         solver(rgbMaze,0,1,0xFF,solution);
         solution[HEIGHT * 2][WIDTH * 4] = 0x0;
-        System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
-        System.out.println(Arrays.deepToString(solution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+        //System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+        //System.out.println(Arrays.deepToString(solution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         
         rgbMazeWithSolution = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
-        System.out.println(rgbMaze[0].length + " " + solution.length + " " + rgbMaze[0].length + " " + rgbMaze.length);
         for (int y = 0; y < rgbMaze.length; y++) {
             for (int x = 0; x < solution[0].length; x++) {
                 rgbMazeWithSolution[y][x] = solution[y][x] != 0 ? solution[y][x] : rgbMaze[y][x];
             }
         }
-        System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+        // System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
     }
     public boolean solver(int[][] rgbMaze,int y, int x, int path,  int[][] solution){
         // double distance1 = Math.sqrt(Math.pow((rgbMaze.length - 2) - x,2)+Math.pow((rgbMaze[0].length - 1) - (y + 1),2));
         // double distance2 = Math.sqrt(Math.pow((rgbMaze.length - 2) - (x + 1),2)+Math.pow((rgbMaze[0].length - 1) - y,2));  
         if (y == (HEIGHT * 2 + 1) - 1 && x == (WIDTH * 4 + 1) - 1) {
-            solution[y][x] = path++;
+            solution[y][x] = path+=1%0xFFFF + 0xFF;
             return true;
         }
         if ((y >= 0 && y < HEIGHT * 2 + 1 && x >= 1 && x < WIDTH * 4 + 1 && rgbMaze[y][x] == 0xFFFFFF) == true) {
-            solution[y][x]                                          = path++;
-            if (solver(rgbMaze, y + 1, x, path, solution))         return true;
+            solution[y][x]                                          = path+=1%0xFFFF + 0xFF;
+            if (solver(rgbMaze, y + 1, x, path, solution))          return true;
             if (solver(rgbMaze, y, x + 1, path, solution))          return true;
-            solution[y][x]                                          = path++;
+            solution[y][x]                                          = path+=1%0xFFFF + 0xFF;
                                                                     return false;
         }
         return false;
