@@ -22,8 +22,8 @@ public class Main extends JFrame implements KeyListener{
         addKeyListener(this);
         rgbMazeToDisplay = rgbMaze;
         
-        setTitle("DJP Maze w/ Solver Using Recursive Backtracking: SPACEBAR = SOLUTION");
-        setSize(10*rgbMaze[0].length + 15,20*rgbMaze.length+47);
+        setTitle("DJP Maze w/ Solver Using Recursive Backtracking: Press Spacebar to Toggle Solution");
+        setSize(20*rgbMaze[0].length + 20,20*rgbMaze.length+47);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
@@ -53,9 +53,9 @@ public class Main extends JFrame implements KeyListener{
             for (int x = 0; x < rgbMazeToDisplay[0].length; x++) {
                 Color colour = new Color(rgbMazeToDisplay[y][x]);
                 g.setColor(colour);
-                g.fillRect(20*x,20*y+37,20,22);
+                g.fillRect(20*x+10,20*y+37,20,22);
                 g.setColor(Color.BLACK);
-                g.drawRect(20*x,20*y+37,20,22);
+                g.drawRect(20*x+10,20*y+37,20,22);
             }
         }
     }
@@ -69,8 +69,7 @@ public class Main extends JFrame implements KeyListener{
 		// Graph G3 = new Graph(25,25, false);
         // G3.print();
         // BufferedImage img = createImage(G2.rgbMaze);
-        Long endTime = System.currentTimeMillis();
-        System.out.println((endTime - startTime) + " miliseconds");
+        
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
@@ -78,6 +77,9 @@ public class Main extends JFrame implements KeyListener{
                 gui.setVisible(true);
             }
         });
+
+        Long endTime = System.currentTimeMillis();
+        System.out.println((endTime - startTime) + " miliseconds");
     }
     
     

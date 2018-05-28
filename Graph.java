@@ -88,7 +88,7 @@ public class Graph {
     }
     public void print() {
         String maze = "";
-        rgbMaze = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
+        rgbMaze = new int[HEIGHT * 2 + 1][WIDTH * 2 + 1];
         maze += "XS";
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
@@ -116,13 +116,13 @@ public class Graph {
 
         System.out.println(maze);
 
-        solution = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
+        solution = new int[HEIGHT * 2 + 1][WIDTH * 2 + 1];
         solver(rgbMaze,0,1,0,solution);
         solution[HEIGHT * 2][WIDTH * 2] = 0x0;
         //System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         //System.out.println(Arrays.deepToString(solution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         
-        rgbMazeWithSolution = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
+        rgbMazeWithSolution = new int[HEIGHT * 2 + 1][WIDTH * 2 + 1];
         for (int y = 0; y < rgbMaze.length; y++) {
             for (int x = 0; x < solution[0].length; x++) {
                 rgbMazeWithSolution[y][x] = solution[y][x] != 0 ? solution[y][x] : rgbMaze[y][x];
@@ -131,21 +131,57 @@ public class Graph {
         //System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
     }
     public boolean solver(int[][] rgbMaze,int y, int x, int path,  int[][] solution){
-        // double distance1 = Math.sqrt(Math.pow((rgbMaze.length - 2) - x,2)+Math.pow((rgbMaze[0].length - 1) - (y + 1),2));
-        // double distance2 = Math.sqrt(Math.pow((rgbMaze.length - 2) - (x + 1),2)+Math.pow((rgbMaze[0].length - 1) - y,2));  
-        if (y == (HEIGHT * 2) && x == (WIDTH * 2 )) {
-            solution[y][x] = rainbow[path++ % 6];
-            return true;
+        if (y == (HEIGHT * 2) && x == (WIDTH * 2 - 1)) {
+            solution[y][x]                                          = rainbow[path++ % 6];
+                                                                    return true;
         }
-        if ((y >= 0 && y < HEIGHT * 2 + 1 && x >= 1 && x < WIDTH * 2 + 1 && rgbMaze[y][x] == 0xFFFFFF) == true) {
+        if ((y >= 0 && y < HEIGHT * 2 + 1 && x >= 0 && x < WIDTH * 2 + 1 && rgbMaze[y][x] == 0xFFFFFF) == true) {
             solution[y][x]                                          = rainbow[path++ % 6];
-            if (solver(rgbMaze, y + 1, x, path, solution))          return true;
             if (solver(rgbMaze, y, x + 1, path, solution))          return true;
-            solution[y][x]                                          = rainbow[path++ % 6];
+            if (solver(rgbMaze, y + 1, x, path, solution))          return true;
+            if (x - 1 >= 0) if (solver(rgbMaze, y, x - 1, path, solution))          return true;
+            if (y - 1 >= 0) if (solver(rgbMaze, y - 1, x, path, solution))          return true;
+            solution[y][x]                                          = 0x0;
                                                                     return false;
         }
-        return false;
+                                                                    return false;
     }
+        // if (x > 0 && rgbMaze[y][x - 1] == 0xFFFFFF) {
+        //     solution[y][x] = rainbow[path++ % 6];
+        //     solver(rgbMaze, y, x - 1, path, solution);
+        // } else if (x < WIDTH * 2 + 1 && rgbMaze[y][x + 1] == 0xFFFFFF) {
+        //     solution[y][x] = rainbow[path++ % 6];
+        //     solver(rgbMaze, y, x + 1, path, solution);
+        // } else if (y > 0 && rgbMaze[y - 1][x] == 0xFFFFFF) {
+        //     solution[y][x] = rainbow[path++ % 6];
+        //     solver(rgbMaze, y - 1, x, path, solution);
+        // } else if (y < HEIGHT * 2 + 1 && rgbMaze[y + 1][x] == 0xFFFFFF) {
+        //     solution[y][x] = rainbow[path++ % 6];
+        //     solver(rgbMaze, y + 1, x, path, solution);
+        // } else if (y == 0 || x == 0 || y == HEIGHT * 2 + 1 || x == WIDTH * 2 + 1) {
+        //     solution[y][x] = rainbow[path++ % 6];
+        // } else {
+        //     solution[y][x] = 0x0;
+        //     if (x > 0 && rgbMaze[y][x - 1] != 0xFFFFFF) {
+        //         solution[y][x] = 0x0;
+        //         solver(rgbMaze, y, x - 1, path, solution);
+        //     } else if (x < WIDTH * 2 + 1 && rgbMaze[y][x + 1] != 0x0) {
+        //         solution[y][x] = 0x0;
+        //         solver(rgbMaze, y, x + 1, path, solution);
+        //     } else if (y > 0 && rgbMaze[y - 1][x] == 0x0) {
+        //         solution[y][x] = 0x0;
+        //         solver(rgbMaze, y - 1, x, path, solution);
+        //     } else if (y < HEIGHT * 2 + 1 && rgbMaze[y + 1][x] == 0x0) {
+        //         solution[y][x] = 0x0;
+        //         solver(rgbMaze, y + 1, x, path, solution);
+        //     }
+
+    public boolean blocked(int[][] rgbMaze,int y, int x, int path,  int[][] solution) {
+        if (y < 0 || x < 0) return false;
+        return y < 0 || x < 0 && rgbMaze[y][x] != 0xFFFFFF ||  x > WIDTH * 2 || y > HEIGHT * 2;
+    }
+
+    
  
     /**
      * I implemented these after reading about how Java random works. Essentially they exist to make
