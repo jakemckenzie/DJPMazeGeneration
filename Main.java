@@ -14,21 +14,21 @@ public class Main extends JFrame{
         this.rgbMaze = rgbMaze;
         this.rgbMazeWithSolution = rgbMazeWithSolution;
         setTitle("DJP Maze Generation & Solver Using Recursive Backtracking");
-        setSize(30*rgbMazeWithSolution[0].length,30*rgbMazeWithSolution.length + 37);
+        setSize(10*rgbMazeWithSolution[0].length + 15,20*rgbMazeWithSolution.length+47);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-
+        rgbMaze[rgbMaze.length - 1][rgbMaze[0].length - 1] = 0x0;
         for (int y = 0; y < rgbMaze.length; y++) {
             for (int x = 0; x < rgbMazeWithSolution[0].length; x++) {
                 Color colour = new Color(rgbMazeWithSolution[y][x]);
                 g.setColor(colour);
-                g.fillRect(30*x,30*y + 30,30,30);
+                g.fillRect(20*x,20*y+37,20,22);
                 g.setColor(Color.BLACK);
-                g.drawRect(30*x,30*y,30,30);
+                g.drawRect(20*x,20*y+37,20,22);
             }
         }
     }
@@ -37,7 +37,7 @@ public class Main extends JFrame{
         Long startTime = System.currentTimeMillis();
 		//Graph G1 = new Graph(4,4, true);
 		//G1.print();
-		Graph G2 = new Graph(5,5, false);
+		Graph G2 = new Graph(20,20, false);
 		G2.print();
 		// Graph G3 = new Graph(25,25, false);
         // G3.print();

@@ -18,6 +18,8 @@ public class Graph {
     public int[][] solution;
     public int[][] rgbMazeWithSolution;
 
+    public int[] rainbow = {0xFF0099,0xF3F315,0x83F52C,0xFF6600,0xFF,0x6E0DD0};
+
     public Graph(int HEIGHT, int WIDTH, boolean debugger) {
         this.HEIGHT                     = HEIGHT;
         this.WIDTH                      = WIDTH;
@@ -87,21 +89,21 @@ public class Graph {
     public void print() {
         String maze = "";
         rgbMaze = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
-        maze += "XSXX";
+        maze += "XS";
         for (int y = 0; y < HEIGHT; y++) {
             for (int x = 0; x < WIDTH; x++) {
-                maze += (x == 0 && y == 0) ? "": flatWall[y][x] ? "X   " : "XXXX";    
+                maze += (x == 0 && y == 0) ? "": flatWall[y][x] ? "X " : "XX";    
             }
             maze += "X" + "\n";
             for (int x = 0; x < WIDTH; x++) {
-                maze += tallWall[y][x] ? (lattice[y][x].added && debugger) ? "  V ": "    " : lattice[y][x].added && debugger ? "X V " : "X   ";
+                maze += tallWall[y][x] ? (lattice[y][x].added && debugger) ? "V ": "  " : lattice[y][x].added && debugger ? "XV" : "X ";
             }
             maze += "X" + "\n";            
         }
         for (int x = 0; x < WIDTH-1; x++) {
-            maze += flatWall[HEIGHT][x] ? "X   " : "XXXX";
+            maze += flatWall[HEIGHT][x] ? "X " : "XX";
         }
-        maze += "XXXFX" + "\n";
+        maze += "XFX" + "\n";
         String temp[] = maze.split("\\\n");
         for (int y = 0; y < temp.length; y++) {
             char[] c = temp[y].toCharArray();
@@ -115,8 +117,8 @@ public class Graph {
         System.out.println(maze);
 
         solution = new int[HEIGHT * 2 + 1][WIDTH * 4 + 1];
-        solver(rgbMaze,0,1,0xFF,solution);
-        solution[HEIGHT * 2][WIDTH * 4] = 0x0;
+        solver(rgbMaze,0,1,0,solution);
+        solution[HEIGHT * 2][WIDTH * 2] = 0x0;
         //System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         //System.out.println(Arrays.deepToString(solution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         
@@ -126,20 +128,20 @@ public class Graph {
                 rgbMazeWithSolution[y][x] = solution[y][x] != 0 ? solution[y][x] : rgbMaze[y][x];
             }
         }
-        // System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+         System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
     }
     public boolean solver(int[][] rgbMaze,int y, int x, int path,  int[][] solution){
         // double distance1 = Math.sqrt(Math.pow((rgbMaze.length - 2) - x,2)+Math.pow((rgbMaze[0].length - 1) - (y + 1),2));
         // double distance2 = Math.sqrt(Math.pow((rgbMaze.length - 2) - (x + 1),2)+Math.pow((rgbMaze[0].length - 1) - y,2));  
-        if (y == (HEIGHT * 2 + 1) - 1 && x == (WIDTH * 4 + 1) - 1) {
-            solution[y][x] = path+=1%0xFFFF + 0xFF;
+        if (y == (HEIGHT * 2) && x == (WIDTH * 2 )) {
+            solution[y][x] = rainbow[path++ % 6];
             return true;
         }
-        if ((y >= 0 && y < HEIGHT * 2 + 1 && x >= 1 && x < WIDTH * 4 + 1 && rgbMaze[y][x] == 0xFFFFFF) == true) {
-            solution[y][x]                                          = path+=1%0xFFFF + 0xFF;
+        if ((y >= 0 && y < HEIGHT * 2 + 1 && x >= 1 && x < WIDTH * 2 + 1 && rgbMaze[y][x] == 0xFFFFFF) == true) {
+            solution[y][x]                                          = rainbow[path++ % 6];
             if (solver(rgbMaze, y + 1, x, path, solution))          return true;
             if (solver(rgbMaze, y, x + 1, path, solution))          return true;
-            solution[y][x]                                          = path+=1%0xFFFF + 0xFF;
+            solution[y][x]                                          = rainbow[path++ % 6];
                                                                     return false;
         }
         return false;
