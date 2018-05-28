@@ -128,7 +128,7 @@ public class Graph {
                 rgbMazeWithSolution[y][x] = solution[y][x] != 0 ? solution[y][x] : rgbMaze[y][x];
             }
         }
-         System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
+        //System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
     }
     public boolean solver(int[][] rgbMaze,int y, int x, int path,  int[][] solution){
         // double distance1 = Math.sqrt(Math.pow((rgbMaze.length - 2) - x,2)+Math.pow((rgbMaze[0].length - 1) - (y + 1),2));

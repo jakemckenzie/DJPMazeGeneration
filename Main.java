@@ -2,29 +2,56 @@ import javax.imageio.*;
 //import java.awt.Image;
 import java.awt.*;
 import java.io.*;
+import javax.swing.*;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
-public class Main extends JFrame{
+public class Main extends JFrame implements KeyListener{
     public int[][] rgbMaze;
     public int[][] rgbMazeWithSolution;
+    public int[][] rgbMazeToDisplay;
+    public int MAZE_CONTROL_EVENT = 0;
+
     public Main(int[][] rgbMaze, int[][] rgbMazeWithSolution) {
         this.rgbMaze = rgbMaze;
         this.rgbMazeWithSolution = rgbMazeWithSolution;
-        setTitle("DJP Maze Generation & Solver Using Recursive Backtracking");
-        setSize(10*rgbMazeWithSolution[0].length + 15,20*rgbMazeWithSolution.length+47);
+        addKeyListener(this);
+        rgbMazeToDisplay = rgbMaze;
+        
+        setTitle("DJP Maze w/ Solver Using Recursive Backtracking: SPACEBAR = SOLUTION");
+        setSize(10*rgbMaze[0].length + 15,20*rgbMaze.length+47);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
     @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_SPACE ) {
+            rgbMazeToDisplay = (MAZE_CONTROL_EVENT++) % 2 == 0 ? rgbMazeWithSolution : rgbMaze;
+            repaint();
+            revalidate();
+        } 
+    }
+    @Override
+    public void keyReleased(KeyEvent e) {
+
+    }
+    @Override
+    public void keyTyped(KeyEvent e) {
+        
+    }
+
+    @Override
     public void paint(Graphics g) {
+        JButton button = new JButton();
         super.paint(g);
-        rgbMaze[rgbMaze.length - 1][rgbMaze[0].length - 1] = 0x0;
-        for (int y = 0; y < rgbMaze.length; y++) {
-            for (int x = 0; x < rgbMazeWithSolution[0].length; x++) {
-                Color colour = new Color(rgbMazeWithSolution[y][x]);
+        rgbMazeToDisplay[rgbMazeToDisplay.length - 1][rgbMazeToDisplay[0].length - 1] = 0x0;
+        for (int y = 0; y < rgbMazeToDisplay.length; y++) {
+            for (int x = 0; x < rgbMazeToDisplay[0].length; x++) {
+                Color colour = new Color(rgbMazeToDisplay[y][x]);
                 g.setColor(colour);
                 g.fillRect(20*x,20*y+37,20,22);
                 g.setColor(Color.BLACK);
@@ -51,27 +78,7 @@ public class Main extends JFrame{
                 gui.setVisible(true);
             }
         });
-        // BufferedImage image = new BufferedImage(G2.rgbMaze[0].length, G2.rgbMaze.length, BufferedImage.TYPE_INT_ARGB);
-        // image.setRGB(0, 0, G2.rgbMaze[0].length, G2.rgbMaze.length, G2.rgbMaze, 0, G2.rgbMaze[0].length);
-        // ImageIO.write(image, "png", new File("test.png"));
     }
     
-    // public BufferedImage createImage(int[][] pixelData)
-    // {
-    // final int width = pixelData[0].length ;
-    // final int height = pixelData.length ;
-    // // First I create a BufferedImage with a DataBufferInt, with the appropriate dimensions and number of channels/bands/colors
-    // ColorSpace myColorSpace = new FloatCS(ColorSpace.TYPE_INT_ARGB, channel) ;
-    // int[] bits = new int[]{32} ;
-    // ColorModel myColorModel = new ComponentColorModel(myColorSpace,bits,false,false,ColorModel.OPAQUE,DataBuffer.Type_INT_ARGB) ;
-    // BufferedImage outputImage = new BufferedImage(myColorModel, myColorModel.createCompatibleWritableRaster(width, height), false, null) ;
-
-    // int[] outputImagePixelData = ((DataBufferInt) outputImage.getRaster().getDataBuffer()).getData() ;
-
-    // for (int y=0, pos=0 ; y < height ; y++)
-    //     for (int x=0 ; x < width ; x++, pos++)
-    //         outputImagePixelData[pos] = pixelData[y][x];
-
-    // return outputImage ;
-    // }
+    
 }
