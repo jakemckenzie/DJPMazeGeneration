@@ -6,25 +6,71 @@ import java.util.Arrays;
 // http://interactivepython.org/runestone/static/Java/Graphs/PrimsSpanningTreeAlgorithm.html
 
 public class Graph {
+    /**
+     * @param WIDTH the width of the lattice
+     */
     public int WIDTH;
+    /**
+     * @param HEIGHT the height of the lattice
+     */
     public int HEIGHT;
-
+    /**
+     * @param debugger a boolean used in debugging
+     */
     public boolean debugger;
-
+    /**
+     * @param lattice a grid of nodes which make up the graph
+     */
     public Node[][] lattice;
+    /**
+     * @param flatWall a boolean lattice used for horizontal walls used for terminal printing 
+     */
     public boolean[][] flatWall;
+    /**
+     * @param tallWall a boolean lattice used for vertical walls used for terminal printing 
+     */
     public boolean[][] tallWall;
+    /**
+     * @param rgbMaze Maze containing hex values for easily outputing to GUI
+     */
     public int[][] rgbMaze;
+    /**
+     * @param solution the solution to the maze only used for GUI, this is only used in processing
+     */
     public int[][] solution;
+    /**
+     * @param rgbMazeWithSolution Maze containing hex values for outputing the maze with solution.
+     */
     public int[][] rgbMazeWithSolution;
+    /**
+     * @param Up up direction used for type of wall
+     */
     public int Up   = Integer.MAX_VALUE;
+    /**
+     * @param Down down direction used for type of wall
+     */
     public int Down = Integer.MIN_VALUE;
+    /**
+     * @param Left left direction used for type of wall
+     */
     public int Left = -1;
+    /**
+     * @param Right right direction used for type of wall
+     */
     public int Right = 1;
-
-    public int[] rainbow = {0xFF355E,0xFD5B78,0xFF6037,0xFF9966,0xFF9933,0xFFCC33,0xFFFF66
-                           ,0xFFFF66,0xCCFF00,0x66FF66,0xAAF0D1,0x50BFE6,0xFF6EFF,0xEE34D2
-                           ,0xFF00CC,0xFF00CC};
+    /**
+     * @param urn usn used for random sampling
+     */
+    public Random urn = new Random(XORShift128plus());
+    /**
+     * @param rainbow bright colours chosen for creating the solution path to maze
+     */
+    public int[] rainbow = {0xFF355E,0xFD5B78,0xFF3855,0xFD3A4A,0xFA5B3D,0xFFAA1D,0xFFF700
+                           ,0xA7F432,0x299617,0xFB4D46,0xFF6037,0xFF9966,0xFF9933,0xFFCC33
+                           ,0xFFFF66,0xFFFF66,0xCCFF00,0x66FF66,0xAAF0D1,0x50BFE6,0xFF6EFF
+                           ,0xEE34D2,0x2243B6,0x5DADEC,0x5DADEC,0x9C51B6,0xFDFF00,0x87FF2A
+                           ,0x319177,0xFF00CC,0xFF00CC,0xFFFF38,0xB2F302,0xFC5A8D,0xFAFA37
+                           ,0xFF5470,0xED0A3F,0x3F26BF,0xFC74FD,0xFF00  ,0xFF0066,0xFF3300};
 
     public Graph(int HEIGHT, int WIDTH, boolean debugger) {
         this.HEIGHT                     = HEIGHT;
@@ -32,13 +78,24 @@ public class Graph {
         this.debugger                   = debugger;
         buildLattice();
     }
+    /**
+     * https://www.coursera.org/learn/algorithms-greedy/lecture/tQ6gK/prims-mst-algorithm
+     * This method builds lattice by first creating a grid of connected
+     * walls. 
+     * 
+     * The idea of this algorithm is to choose a single cut randomly, then
+     * at each stage I grow by graph by making more an more cuts to the graph.
+     * As I break walls(make cuts) I update my wall boolean arrays. 
+     * 
+     * This algorithm takes advantage of the "cut property"
+     */
     public void buildLattice() {
         
         ArrayList<Wall> borders         = new ArrayList<Wall>();
         lattice                         = new Node[HEIGHT][WIDTH];
         flatWall                        = new boolean[HEIGHT + 1][WIDTH];
         tallWall                        = new boolean[HEIGHT][WIDTH + 1];
-        Random urn                      = new Random(XORShift128plus());
+        
         flatWall[0][0]                  = true;
         flatWall[HEIGHT][WIDTH - 1]     = true;
 
@@ -59,19 +116,19 @@ public class Graph {
         while (!borders.isEmpty() && adds <= HEIGHT * WIDTH) {
             if (debugger) print();
             Wall w = borders.remove(urn.nextInt(borders.size()));
-            if (w.type == Left && !lattice[w.y][w.x - 1].added) {
+            if (w.orientation == Left && !lattice[w.y][w.x - 1].added) {
                 lattice[w.y][w.x - 1].added     = true;
                 tallWall[w.y][w.x]              = true;
                 n                               = lattice[w.y][w.x - 1];
-            } else if (w.type == Right && !lattice[w.y][w.x + 1].added) {
+            } else if (w.orientation == Right && !lattice[w.y][w.x + 1].added) {
                 lattice[w.y][w.x + 1].added     = true;
                 tallWall[w.y][w.x +1]           = true;
                 n                               = lattice[w.y][w.x + 1];
-            } else if (w.type == Up && !lattice[w.y - 1][w.x].added) {
+            } else if (w.orientation == Up && !lattice[w.y - 1][w.x].added) {
                 lattice[w.y - 1][w.x].added     = true;
                 flatWall[w.y][w.x]              = true;
                 n                               = lattice[w.y - 1][w.x];
-            } else if (w.type == Down && !lattice[w.y + 1][w.x].added) {
+            } else if (w.orientation == Down && !lattice[w.y + 1][w.x].added) {
                 lattice[w.y + 1][w.x].added     = true;
                 flatWall[w.y + 1][w.x]          = true;
                 n                               = lattice[w.y + 1][w.x];
@@ -89,6 +146,10 @@ public class Graph {
 
         
     }
+    /**
+     * print is used for both console and GUI. It is where the terminal maze is created and 
+     * the pixel arrays are generated.
+     */
     public void print() {
         String maze = "";
         rgbMaze = new int[HEIGHT * 2 + 1][WIDTH * 2 + 1];
@@ -110,20 +171,12 @@ public class Graph {
         String temp[] = maze.split("\\\n");
         for (int y = 0; y < temp.length; y++) {
             char[] c = temp[y].toCharArray();
-            for (int x = 0; x < c.length; x++) {
-                //System.out.print(" " + y + " " + x + " ");
-                rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF : 0xFFFFFF; 
-            }
+            for (int x = 0; x < c.length; x++) rgbMaze[y][x] = c[x] == 'X' ? 0x0 : c[x] == ' ' ? 0xFFFFFF : 0xFFFFFF;
         }
-        //System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
-
         System.out.println(maze);
-
         solution = new int[HEIGHT * 2 + 1][WIDTH * 2 + 1];
-        solver(rgbMaze,0,1,0,solution,Down);
+        recursiveBacktracker(rgbMaze,0,1,35,solution,Down);
         solution[HEIGHT * 2][WIDTH * 2] = 0x0;
-        //System.out.println(Arrays.deepToString(rgbMaze).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
-        //System.out.println(Arrays.deepToString(solution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
         
         rgbMazeWithSolution = new int[HEIGHT * 2 + 1][WIDTH * 2 + 1];
         for (int y = 0; y < rgbMaze.length; y++) {
@@ -131,53 +184,32 @@ public class Graph {
                 rgbMazeWithSolution[y][x] = solution[y][x] != 0 ? solution[y][x] : rgbMaze[y][x];
             }
         }
-        //System.out.println(Arrays.deepToString(rgbMazeWithSolution).replace("], ", "]\n").replace("[[", "[").replace("]]", "]") + '\n');
     }
-    public boolean solver(int[][] rgbMaze,int y, int x, int path,  int[][] solution,int direction){
+    /**
+     * Recursive backtracker to solve the maze. I attempted at first to implement
+     * A* but got bogged down in the complexity of the algorithm so I did this instead.
+     * 
+     * https://www.hackerearth.com/practice/basic-programming/recursion/recursion-and-backtracking/tutorial/
+     */
+    public boolean recursiveBacktracker(int[][] rgbMaze,int y, int x, int path,  int[][] solution,int direction){
         if (y == (HEIGHT * 2) && x == (WIDTH * 2 - 1)) {
-            solution[y][x]                                          = rainbow[path++ % 16];
-                                                                    return true;
+            solution[y][x]                                                                                  = rainbow[urn.nextInt(path)];
+                                                                                                            return true;
         }
         if ((y >= 0 && y < HEIGHT * 2 + 1 && x >= 0 && x < WIDTH * 2 + 1 && rgbMaze[y][x] != 0x0) == true) {
-            solution[y][x]                                                                  = rainbow[path++ % 16];
-            if (direction != Left && solver(rgbMaze, y, x + 1, path, solution,Right))       return true;
-            if (direction != Up && solver(rgbMaze, y + 1, x, path, solution,Down))          return true;
-            if (direction != Right && solver(rgbMaze, y, x - 1, path, solution,Left))       return true;
-            if (direction != Down && solver(rgbMaze, y - 1, x, path, solution,Up))          return true;
-            solution[y][x]                                                                  = 0x0;
-                                                                                            return false;
+            solution[y][x]                                                                                  = rainbow[urn.nextInt(path)];
+            if (direction != Left && recursiveBacktracker(rgbMaze, y, x + 1, path, solution,Right))         return true;
+            if (direction != Up && recursiveBacktracker(rgbMaze, y + 1, x, path, solution,Down))            return true;
+            if (direction != Right && recursiveBacktracker(rgbMaze, y, x - 1, path, solution,Left))         return true;
+            if (direction != Down && recursiveBacktracker(rgbMaze, y - 1, x, path, solution,Up))            return true;
+            solution[y][x]                                                                                  = 0x0;
+                                                                                                            return false;
         }
-                                                                                            return false;
+                                                                                                            return false;
     }
-        // if (x > 0 && rgbMaze[y][x - 1] == 0xFFFFFF) {
-        //     solution[y][x] = rainbow[path++ % 6];
-        //     solver(rgbMaze, y, x - 1, path, solution);
-        // } else if (x < WIDTH * 2 + 1 && rgbMaze[y][x + 1] == 0xFFFFFF) {
-        //     solution[y][x] = rainbow[path++ % 6];
-        //     solver(rgbMaze, y, x + 1, path, solution);
-        // } else if (y > 0 && rgbMaze[y - 1][x] == 0xFFFFFF) {
-        //     solution[y][x] = rainbow[path++ % 6];
-        //     solver(rgbMaze, y - 1, x, path, solution);
-        // } else if (y < HEIGHT * 2 + 1 && rgbMaze[y + 1][x] == 0xFFFFFF) {
-        //     solution[y][x] = rainbow[path++ % 6];
-        //     solver(rgbMaze, y + 1, x, path, solution);
-        // } else if (y == 0 || x == 0 || y == HEIGHT * 2 + 1 || x == WIDTH * 2 + 1) {
-        //     solution[y][x] = rainbow[path++ % 6];
-        // } else {
-        //     solution[y][x] = 0x0;
-        //     if (x > 0 && rgbMaze[y][x - 1] != 0xFFFFFF) {
-        //         solution[y][x] = 0x0;
-        //         solver(rgbMaze, y, x - 1, path, solution);
-        //     } else if (x < WIDTH * 2 + 1 && rgbMaze[y][x + 1] != 0x0) {
-        //         solution[y][x] = 0x0;
-        //         solver(rgbMaze, y, x + 1, path, solution);
-        //     } else if (y > 0 && rgbMaze[y - 1][x] == 0x0) {
-        //         solution[y][x] = 0x0;
-        //         solver(rgbMaze, y - 1, x, path, solution);
-        //     } else if (y < HEIGHT * 2 + 1 && rgbMaze[y + 1][x] == 0x0) {
-        //         solution[y][x] = 0x0;
-        //         solver(rgbMaze, y + 1, x, path, solution);
-        //     }
+    /**
+     * Checks to see if the recursiveBacktracker() is following a valid path
+     */
 
     public boolean blocked(int[][] rgbMaze,int y, int x, int path,  int[][] solution) {
         if (y < 0 || x < 0) return false;

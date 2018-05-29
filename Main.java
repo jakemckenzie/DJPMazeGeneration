@@ -9,12 +9,34 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
+import java.util.Scanner;
+
+/**
+ * @author Jake McKenzie
+ * 
+ * This assignment was worked on alone by Jake McKenzie.
+ * 
+ * ***All extra credit was completed. PLEASE ENTER IN DIMENSIONS YOU WANT THE GUI TO BE.***  
+ */
 
 public class Main extends JFrame implements KeyListener{
+    /**
+     * @param rgbMaze pixels for blank maze
+     */
     public int[][] rgbMaze;
+    /**
+     * @param rgbMazeWithSolution pixels for solved maze
+     */
     public int[][] rgbMazeWithSolution;
+    /**
+     * @param rgbMazeToDisplay pixels actually printed to GUI, used for control flow
+     */
     public int[][] rgbMazeToDisplay;
+    /**
+     * @param MAZE_CONTROL_EVENT number of space bar presses for GUI
+     */
     public int MAZE_CONTROL_EVENT = 0;
+    
 
     public Main(int[][] rgbMaze, int[][] rgbMazeWithSolution) {
         this.rgbMaze = rgbMaze;
@@ -22,31 +44,45 @@ public class Main extends JFrame implements KeyListener{
         addKeyListener(this);
         rgbMazeToDisplay = rgbMaze;
         
-        setTitle("DJP Maze w/ Solver Using Recursive Backtracking: Press Spacebar to Toggle Solution");
+        setTitle("DJP generated Maze solved w/ Recursive Backtracking: Press Spacebar to Toggle Solution");
         setSize(10*rgbMaze[0].length + 20,10*rgbMaze.length+47);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
+    /**
+     * @param e key event for control flow, if key pressed it repaints maze
+     */
     @Override
     public void keyPressed(KeyEvent e) {
         if (e.getKeyCode() == KeyEvent.VK_SPACE ) {
             rgbMazeToDisplay = (MAZE_CONTROL_EVENT++) % 2 == 0 ? rgbMazeWithSolution : rgbMaze;
             repaint();
             revalidate();
-        } 
+        }
     }
+    /**
+     * trash method needed for GUI to work properly
+     */
     @Override
     public void keyReleased(KeyEvent e) {
 
     }
+    /**
+     * trash method needed for GUI to work properly
+     */
     @Override
     public void keyTyped(KeyEvent e) {
         
     }
+    /**
+     * @param g used to determine pixel density and dimensions
+     * 
+     * There isn't very good documentation on how to do this and this
+     * was very finicky to actualyl create.
+     */
 
     @Override
     public void paint(Graphics g) {
-        JButton button = new JButton();
         super.paint(g);
         rgbMazeToDisplay[rgbMazeToDisplay.length - 1][rgbMazeToDisplay[0].length - 1] = 0x0;
         for (int y = 0; y < rgbMazeToDisplay.length; y++) {
@@ -61,19 +97,28 @@ public class Main extends JFrame implements KeyListener{
     }
 
 	public static void main(String[] args) {
-        Long startTime = System.currentTimeMillis();
-		//Graph G1 = new Graph(4,4, true);
-		//G1.print();
-		Graph G2 = new Graph(50,80, false);
-		G2.print();
-		// Graph G3 = new Graph(25,25, false);
-        // G3.print();
-        // BufferedImage img = createImage(G2.rgbMaze);
+        int MAZE_WIDTH = 1;
+        int MAZE_HEIGHT = 1;
+        Scanner keyboard = new Scanner(System.in);
+        while (true) {
+            System.out.print("Please enter a maze width between 4 to 90 blocks: ");
+            MAZE_WIDTH = keyboard.nextInt();
+            if (MAZE_WIDTH >= 4 && MAZE_WIDTH <= 95) break;
+        }
+        while (true) {
+            System.out.print("Please enter a maze height between 4 to 50 blocks: ");
+            MAZE_HEIGHT = keyboard.nextInt();
+            if (MAZE_HEIGHT >= 4 && MAZE_HEIGHT <= 50) break;
+        }
         
+        Long startTime = System.currentTimeMillis();
+		
+		Graph G = new Graph(MAZE_HEIGHT,MAZE_WIDTH, false);
+		G.print();
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                Main gui = new Main(G2.rgbMaze,G2.rgbMazeWithSolution);
+                Main gui = new Main(G.rgbMaze,G.rgbMazeWithSolution);
                 gui.setVisible(true);
             }
         });
