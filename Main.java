@@ -78,7 +78,7 @@ public class Main extends JFrame implements KeyListener{
      * @param g used to determine pixel density and dimensions
      * 
      * There isn't very good documentation on how to do this and this
-     * was very finicky to actualyl create.
+     * was very finicky to actually create.
      */
 
     @Override
@@ -125,7 +125,39 @@ public class Main extends JFrame implements KeyListener{
 
         Long endTime = System.currentTimeMillis();
         System.out.println((endTime - startTime) + " miliseconds");
+
+        //testGraph();
+        //testLattice();
     }
-    
+
+    /**
+     * Prints a graph with dugger on. Due to how the GUI works the
+     * terminal print is now less readable but works as it should.
+     * Each broken wall prints a V in its place.
+     */
+    public static void testGraph() {
+        Graph test = new Graph(4,4,true);
+    }
+    /**
+     * Tests the dimensions of the lattice.
+     */
+    public static void testLattice() {
+        Graph testLatticeOddEven;
+        for (int i = 5; i < 22; i+=2) {
+            for (int j = 4; j < 30; j+=2) {
+                System.out.println(i + " by " + j);
+                testLatticeOddEven = new Graph(i,j,false);
+                testLatticeOddEven.print();
+            }
+        }
+        Graph testLatticeEvenOdd;
+        for (int m = 4; m < 30; m+=2) {
+            for (int n = 5; n < 4; n+=2) {
+                System.out.println(m + " by " + n);
+                testLatticeEvenOdd = new Graph(m,n,false);
+                testLatticeEvenOdd.print();
+            }
+        }
+    }
     
 }
