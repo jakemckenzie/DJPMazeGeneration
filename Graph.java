@@ -5,6 +5,25 @@ import java.util.Arrays;
 // javac *.java -Xlint:unchecked
 // http://interactivepython.org/runestone/static/Java/Graphs/PrimsSpanningTreeAlgorithm.html
 
+/**
+ * Since all conections between nodes in my graph happen between adjacent elements,
+ * a "linked structure" is not needed to represent the maze as a graph. A pair of boolean matrices
+ * are used in conjuction with a 2d matrix of nodes to represent the nodes and edges. This can
+ * be accomplished because each node, by it's nature, only has two wall segments that are cut and two
+ * intact, ALWAYS. No pointers are needed only the location of nodes in the graph and their wall placements.
+ * 
+ * For most of this assignment the lectures from coursera on Algorithms and Data Structures by Tim Roughgarden
+ * was used heavily.
+ * 
+ * https://www.coursera.org/learn/algorithms-graphs-data-structures/lecture/NX0BI/graph-search-overview
+ * 
+ * Although I did not understand most of it, I did watch a set of lectures by the same instructor on
+ * algorithmic game theory a while ago and for anyone reading this I
+ * recommend the lectures heavily.
+ * 
+ * https://www.youtube.com/watch?v=TM_QFmQU_VA
+ */
+
 public class Graph {
     /**
      * @param WIDTH the width of the lattice
@@ -84,8 +103,10 @@ public class Graph {
      * walls. 
      * 
      * The idea of this algorithm is to choose a single cut randomly, then
-     * at each stage I grow by graph by making more an more cuts to the graph.
-     * As I break walls(make cuts) I update my wall boolean arrays. 
+     * at each stage I grow by graph by making more and more cuts to the graph.
+     * As I break walls(make cuts) I update my wall boolean arrays, if the node
+     * has been visited I keep track of that and don't break walls associated 
+     * with that node. 
      * 
      * This algorithm takes advantage of the "cut property"
      */
@@ -189,7 +210,7 @@ public class Graph {
      * Recursive backtracker to solve the maze. I attempted at first to implement
      * A* but got bogged down in the complexity of the algorithm so I did this instead.
      * 
-     * https://www.hackerearth.com/practice/basic-programming/recursion/recursion-and-backtracking/tutorial/
+     * https://www.coursera.org/learn/algorithms-graphs-data-structures/lecture/JZRXz/breadth-first-search-bfs-the-basics
      */
     public boolean recursiveBacktracker(int[][] rgbMaze,int y, int x, int path,  int[][] solution,int direction){
         if (y == (HEIGHT * 2) && x == (WIDTH * 2 - 1)) {

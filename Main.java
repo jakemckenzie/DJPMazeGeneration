@@ -103,7 +103,7 @@ public class Main extends JFrame implements KeyListener{
         while (true) {
             System.out.print("Please enter a maze width between 4 to 90 blocks: ");
             MAZE_WIDTH = keyboard.nextInt();
-            if (MAZE_WIDTH >= 4 && MAZE_WIDTH <= 95) break;
+            if (MAZE_WIDTH >= 4 && MAZE_WIDTH <= 90) break;
         }
         while (true) {
             System.out.print("Please enter a maze height between 4 to 50 blocks: ");
@@ -137,6 +137,7 @@ public class Main extends JFrame implements KeyListener{
      */
     public static void testGraph() {
         Graph test = new Graph(4,4,true);
+        test.print();
     }
     /**
      * Tests the dimensions of the lattice.
@@ -152,7 +153,7 @@ public class Main extends JFrame implements KeyListener{
         }
         Graph testLatticeEvenOdd;
         for (int m = 4; m < 30; m+=2) {
-            for (int n = 5; n < 4; n+=2) {
+            for (int n = 5; n < 22; n+=2) {
                 System.out.println(m + " by " + n);
                 testLatticeEvenOdd = new Graph(m,n,false);
                 testLatticeEvenOdd.print();
